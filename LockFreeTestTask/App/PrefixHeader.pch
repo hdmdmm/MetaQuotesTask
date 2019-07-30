@@ -1,0 +1,11 @@
+//
+//  PrefixHeader.pch
+//  LockFreeTestTask
+//
+//  Created by Dmitry Khotyanovich on 7/16/19.
+//  Copyright © 2019 hdmdmm. All rights reserved.
+//
+
+#if __has_feature(objc_arc)
+#error This project must be compiled with non ARC feature
+#endif
