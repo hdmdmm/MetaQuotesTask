@@ -10,7 +10,9 @@
 #import "LogDownloader.h"
 #import "LogReader.h"
 
-@interface ViewController () <LogDownloaderDelegate, LogReaderDelegate>
+@interface ViewController () <LogDownloaderDelegate, LogReaderDelegate> {
+    dispatch_queue_t _queue;
+}
 
 @property (weak, nonatomic) IBOutlet UITextField *urlEditor;
 @property (weak, nonatomic) IBOutlet UITextField *filterEditor;
@@ -23,6 +25,8 @@
 @property (copy, nonatomic) NSError * error;
 @property (assign, nonatomic) BOOL inProgress;
 
+@property (strong, nonatomic) NSMutableString *matchedLog;
+
 - (IBAction)searchActivated:(id)sender;
 @end
 
@@ -30,16 +34,20 @@
 
 - (void) dealloc {
 //    self.loader = nil;
+    dispatch_release(_queue);
     self.error = nil;
     self.reader = nil;
+    self.matchedLog = nil;
     [super dealloc];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+     _queue = dispatch_queue_create("com.hdmdmm.lockfreetesttask.outputqueue", DISPATCH_QUEUE_SERIAL);
     [self.view addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)]];
     [self addActivityIndicator];
     self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";//@"http://www.almhuette-raith.at/apache-log/access.log";
+    self.matchedLog = [NSMutableString stringWithString:@"Search result:\n"];
     [self addObservers];
     self.inProgress = NO;
 }
@@ -109,7 +117,7 @@
 #pragma mark - LogDownloaderDelegate API
 - (void)loader:(LogDownloader * _Nonnull)loader contentLength:(NSUInteger)length {
     self.reader = nil;
-    self.reader = [LogReader readerWithContainerSize:length];
+    self.reader = [[LogReader new] autorelease];
     self.reader.delegate = self;
     self.reader.key = self.filterEditor.text;
 }
@@ -125,11 +133,15 @@
 
 #pragma mark - LogReaderDelegate API
 - (void)reader:(nullable LogReader *)reader foundLines:(nullable NSString *)lines {
-    dispatch_async(dispatch_get_main_queue(), ^{
-        NSString * logs = self.searchResultView.text != nil ? self.searchResultView.text: @"";
-        NSMutableString * newLogs = [NSMutableString stringWithString:logs];
-        [newLogs appendString: lines];
-        self.searchResultView.text = newLogs;
+    if (lines == nil) return;
+    
+    dispatch_async(_queue, ^{
+        [self.matchedLog appendString:lines];
+        [self.matchedLog appendString:@"\n"];
+        dispatch_async(dispatch_get_main_queue(), ^{
+            self.searchResultView.text = self.matchedLog;
+            self.inProgress = NO;
+        });
     });
 }
 
