@@ -13,26 +13,18 @@
     CLogReader * _reader;
 }
 
-@property (retain, nonatomic) NSMutableData *data;
-
 - (void)addObservers;
 
 @end
 
 @implementation LogReader
 
-+ (nullable instancetype)readerWithContainerSize:(NSUInteger)length {
-    LogReader *reader = [[LogReader alloc] init];
-    reader.data = [NSMutableData dataWithLength:length];
-    return [reader autorelease];
-}
-
 - (nullable instancetype)init {
     if (self = [super init]) {
         //lamda to process process matched lines
         __weak typeof(self) _wself = self;
         auto callBack = [=](const char *linePtr) {
-            NSString *string = [NSString stringWithCString:linePtr encoding:NSASCIIStringEncoding];
+            NSString *string = [NSString stringWithCString:linePtr encoding:NSUTF8StringEncoding];
             [_delegate reader:_wself foundLines:string];
             return true;
         };
@@ -54,7 +46,6 @@
         _reader = NULL;
     }
     self.key = nil;
-    self.data = nil;
     [super dealloc];
 }
 

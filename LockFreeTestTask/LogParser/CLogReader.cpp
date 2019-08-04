@@ -38,16 +38,6 @@ typedef struct BlockInfo {
     }
 } BlockInfo;
 
-typedef struct ThreadInfo {
-    BlockInfo * info;
-    function<void(const char *)> call_back;
-    void free() {
-        info->free();
-        ::free((void *)info);
-        ::free(this);
-    }
-} ThreadInfo;
-
 namespace api {
 
     function<void(const char *)> call_back;
@@ -112,9 +102,10 @@ namespace api {
             memcpy(buffer, info->data, info->size);
         }
         // search for lines in the buffer
+        char *freed_buffer = buffer;
         char *line_ptr = NULL;
         char *last_line_ptr = NULL;
-        while( (line_ptr = strsep(&buffer, "\n")) != NULL ) //strsep frees memory
+        while( (line_ptr = strsep(&buffer, "\n")) != NULL )
         {
             printf("%s\n", line_ptr);
             if (IsLineMatchToKey(line_ptr, vars::search_key)) {
@@ -133,6 +124,7 @@ namespace api {
         //free memory
         int thread_number = info->thread_counter;
         info->free();
+        free(freed_buffer);
         
         pthread_mutex_unlock(&vars::mutex);
         printf("Finished thread number %d\n", thread_number);

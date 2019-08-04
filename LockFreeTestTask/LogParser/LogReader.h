@@ -21,7 +21,6 @@
 @property (copy, nonatomic) NSString * _Nullable key;
 @property (assign, nonatomic) id<LogReaderDelegate> _Nullable delegate;
 
-+ (nullable instancetype)readerWithContainerSize:(NSUInteger)length;
 - (BOOL)addToParse:(nullable NSData *)part;
 
 @end
