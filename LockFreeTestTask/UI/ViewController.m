@@ -38,6 +38,7 @@
     self.error = nil;
     self.reader = nil;
     self.matchedLog = nil;
+    [self removeObservers];
     [super dealloc];
 }
 
@@ -93,6 +94,10 @@
 - (void)addObservers {
     [self addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
     [self addObserver:self forKeyPath:@"inProgress" options:NSKeyValueObservingOptionNew context:nil];
+}
+- (void)removeObservers {
+    [self removeObserver:self forKeyPath:@"error"];
+    [self removeObserver:self forKeyPath:@"inProgress"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
