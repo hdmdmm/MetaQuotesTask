@@ -23,7 +23,6 @@ namespace vars {
     unsigned int multiplyer = 1;
     
     pthread_mutex_t mutex;
-//    pthread_cond_t condition;
 
     int thread_counter = 0;
 }
@@ -70,10 +69,7 @@ namespace api {
                 line = cp++;
             }
         }
-        
-        while (*key == '*') {
-            line++;
-        }
+    
         return !*key;
     }
     
