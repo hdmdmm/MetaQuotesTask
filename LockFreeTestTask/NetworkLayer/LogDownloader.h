@@ -12,6 +12,7 @@
 - (void)loader:(LogDownloader * _Nonnull)loader contentLength:(NSUInteger)length;
 - (void)loader:(LogDownloader * _Nonnull)loader loadedPart:(NSData *_Nullable)data;
 - (void)loader:(LogDownloader * _Nonnull)loader completedWith:(NSError * _Nullable)error;
+- (void)loader:(LogDownloader * _Nonnull)loader progress:(float)progress;
 @end
 
 @interface LogDownloader: NSObject

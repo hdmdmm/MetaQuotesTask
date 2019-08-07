@@ -18,13 +18,16 @@
 @property (weak, nonatomic) IBOutlet UITextField *filterEditor;
 @property (weak, nonatomic) IBOutlet UITextView *searchResultView;
 @property (weak, nonatomic) UIView *activityView;
+@property (weak, nonatomic) IBOutlet UIView *resultWindow;
+@property (weak, nonatomic) IBOutlet UIProgressView *progressView;
+@property (weak, nonatomic) IBOutlet UILabel *progressLabel;
+@property (weak, nonatomic) IBOutlet UIButton *activityButton;
 
 //@property (weak, nonatomic) LogDownloader * loader;
 @property (strong, nonatomic) LogReader * reader;
-
 @property (copy, nonatomic) NSError * error;
 @property (assign, nonatomic) BOOL inProgress;
-
+@property (assign, nonatomic) BOOL isResultReady;
 @property (strong, nonatomic) NSMutableString *matchedLog;
 
 - (IBAction)searchActivated:(id)sender;
@@ -39,18 +42,28 @@
     self.reader = nil;
     self.matchedLog = nil;
     [self removeObservers];
+    [_activityButton release];
     [super dealloc];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    [self localize];
      _queue = dispatch_queue_create("com.hdmdmm.lockfreetesttask.outputqueue", DISPATCH_QUEUE_SERIAL);
     [self.view addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)]];
     [self addActivityIndicator];
-    self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";//@"http://www.almhuette-raith.at/apache-log/access.log";
+    self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";
+    //@"http://www.almhuette-raith.at/apache-log/access.log";
     self.matchedLog = [NSMutableString stringWithString:@"Search result:\n"];
     [self addObservers];
     self.inProgress = NO;
+    self.isResultReady = NO;
+}
+
+- (void)localize {
+    self.urlEditor.placeholder = NSLocalizedString(self.urlEditor.placeholder, nil);
+    self.filterEditor.placeholder = NSLocalizedString(self.filterEditor.placeholder, nil);
+    [self.activityButton setTitle:NSLocalizedString(self.activityButton.currentTitle, nil) forState:UIControlStateNormal];
 }
 
 - (IBAction)searchActivated:(id)sender {
@@ -92,12 +105,17 @@
 }
 
 - (void)addObservers {
-    [self addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
-    [self addObserver:self forKeyPath:@"inProgress" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"error"
+              options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"inProgress"
+              options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"isResultReady"
+              options:NSKeyValueObservingOptionNew context:nil];
 }
 - (void)removeObservers {
     [self removeObserver:self forKeyPath:@"error"];
     [self removeObserver:self forKeyPath:@"inProgress"];
+    [self removeObserver:self forKeyPath:@"isResultReady"];
 }
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
@@ -106,6 +124,9 @@
     }
     if ([keyPath isEqualToString:@"inProgress"]) {
         [self.activityView setHidden:![change[NSKeyValueChangeNewKey] boolValue]];
+    }
+    if ([keyPath isEqualToString:@"isResultReady"]) {
+        [self.resultWindow setHidden:![change[NSKeyValueChangeNewKey] boolValue]];
     }
 }
 
@@ -136,6 +157,11 @@
     [loader release];
 }
 
+- (void)loader:(LogDownloader * _Nonnull)loader progress:(float)progress {
+    [self.progressView setProgress:progress];
+    [self.progressLabel setText:[NSString stringWithFormat:@"%.02f%s", progress*100, "%"]];
+}
+
 #pragma mark - LogReaderDelegate API
 - (void)reader:(nullable LogReader *)reader foundLines:(nullable NSString *)lines {
     if (lines == nil) return;
@@ -143,9 +169,11 @@
     dispatch_async(_queue, ^{
         [self.matchedLog appendString:lines];
         [self.matchedLog appendString:@"\n"];
+        [self.matchedLog appendString:@"\n"];
         dispatch_async(dispatch_get_main_queue(), ^{
             self.searchResultView.text = self.matchedLog;
             self.inProgress = NO;
+            self.isResultReady = YES;
         });
     });
 }

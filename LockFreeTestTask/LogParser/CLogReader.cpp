@@ -103,7 +103,7 @@ namespace api {
         char *last_line_ptr = NULL;
         while( (line_ptr = strsep(&buffer, "\n")) != NULL )
         {
-            printf("%s\n", line_ptr);
+//            printf("%s\n", line_ptr);
             if (IsLineMatchToKey(line_ptr, vars::search_key)) {
                 api::call_back(line_ptr);
             }

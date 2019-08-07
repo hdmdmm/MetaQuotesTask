@@ -50,6 +50,8 @@ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))complet
     receivedBytes += data.length;
     NSLog(@"\nReceived package: %ld bytes", (long)data.length );
     [self.delegate loader:self loadedPart:data];
+    float progress = (float)receivedBytes/(float)contentLength;
+    [self.delegate loader:self progress:progress];
 }
 
 #pragma mark - NSURLSessionDelegate API

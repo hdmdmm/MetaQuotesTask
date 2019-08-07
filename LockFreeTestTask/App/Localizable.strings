@@ -1,0 +1,14 @@
+/* 
+  Localizable.strings
+  LockFreeTestTask
+
+  Created by Dmitry Khotyanovich on 8/7/19.
+  Copyright © 2019 hdmdmm. All rights reserved.
+*/
+
+"placeholder_url"           ="Type here url to remote log file:";
+"placeholder_key_search"    ="Type here search key with *, ? and alphabet symbols";
+"button_title_run"          ="Go!";
+"button_title_stop"         ="Stop";
+"button_title_clear"        ="Clear";
+"progress_loading"          ="Loading";
