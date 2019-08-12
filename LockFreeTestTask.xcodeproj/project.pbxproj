@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9768C1022301BE74000C703A /* LogWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9768C1002301BE74000C703A /* LogWindowViewController.m */; };
+		9768C1032301BE74000C703A /* LogWindowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 9768C1012301BE74000C703A /* LogWindowViewController.xib */; };
+		9768C1082301C07A000C703A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9768C1072301C07A000C703A /* MainViewController.m */; };
 		979BD1D322FB3B7800582875 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 979BD1D222FB3B7800582875 /* Localizable.strings */; };
 		97ADDCE022E59B130052725B /* LogReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97ADDCDF22E59B130052725B /* LogReader.mm */; };
 		97B9930B22DDE9B200C4E9E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 97B9930A22DDE9B200C4E9E4 /* AppDelegate.m */; };
@@ -21,6 +24,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9768C0FF2301BE74000C703A /* LogWindowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogWindowViewController.h; sourceTree = "<group>"; };
+		9768C1002301BE74000C703A /* LogWindowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogWindowViewController.m; sourceTree = "<group>"; };
+		9768C1012301BE74000C703A /* LogWindowViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LogWindowViewController.xib; sourceTree = "<group>"; };
+		9768C1062301C07A000C703A /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
+		9768C1072301C07A000C703A /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
 		979BD1D222FB3B7800582875 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		979E5B6422EB363000CD3E84 /* LogReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogReader.h; sourceTree = "<group>"; };
 		97ADDCDF22E59B130052725B /* LogReader.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LogReader.mm; sourceTree = "<group>"; };
@@ -54,6 +62,25 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9768C0FE2301BE38000C703A /* Windows */ = {
+			isa = PBXGroup;
+			children = (
+				9768C0FF2301BE74000C703A /* LogWindowViewController.h */,
+				9768C1002301BE74000C703A /* LogWindowViewController.m */,
+				9768C1012301BE74000C703A /* LogWindowViewController.xib */,
+			);
+			path = Windows;
+			sourceTree = "<group>";
+		};
+		9768C1052301BFC1000C703A /* Main */ = {
+			isa = PBXGroup;
+			children = (
+				9768C1062301C07A000C703A /* MainViewController.h */,
+				9768C1072301C07A000C703A /* MainViewController.m */,
+			);
+			path = Main;
+			sourceTree = "<group>";
+		};
 		97B992FD22DDE9B200C4E9E4 = {
 			isa = PBXGroup;
 			children = (
@@ -110,9 +137,10 @@
 		97B9932822DF04A000C4E9E4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				9768C1052301BFC1000C703A /* Main */,
+				9768C0FE2301BE38000C703A /* Windows */,
 				97B9930C22DDE9B200C4E9E4 /* ViewController.h */,
 				97B9930D22DDE9B200C4E9E4 /* ViewController.m */,
-				97B9930F22DDE9B200C4E9E4 /* Main.storyboard */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -120,6 +148,7 @@
 		97B9932922DF04B500C4E9E4 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				97B9930F22DDE9B200C4E9E4 /* Main.storyboard */,
 				97B9931422DDE9B300C4E9E4 /* LaunchScreen.storyboard */,
 				97B9931222DDE9B300C4E9E4 /* Assets.xcassets */,
 			);
@@ -204,6 +233,7 @@
 				97B9931622DDE9B300C4E9E4 /* LaunchScreen.storyboard in Resources */,
 				979BD1D322FB3B7800582875 /* Localizable.strings in Resources */,
 				97B9931322DDE9B300C4E9E4 /* Assets.xcassets in Resources */,
+				9768C1032301BE74000C703A /* LogWindowViewController.xib in Resources */,
 				97B9931122DDE9B200C4E9E4 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -219,7 +249,9 @@
 				97B9931922DDE9B300C4E9E4 /* main.m in Sources */,
 				97B9932622DEF0F100C4E9E4 /* CLogReader.cpp in Sources */,
 				97B9932222DE66A700C4E9E4 /* NSData+FileLoader.m in Sources */,
+				9768C1082301C07A000C703A /* MainViewController.m in Sources */,
 				97B9932E22DF856600C4E9E4 /* LogDownloader.m in Sources */,
+				9768C1022301BE74000C703A /* LogWindowViewController.m in Sources */,
 				97ADDCE022E59B130052725B /* LogReader.mm in Sources */,
 				97B9930B22DDE9B200C4E9E4 /* AppDelegate.m in Sources */,
 			);
