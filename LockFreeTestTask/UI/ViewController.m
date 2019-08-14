@@ -42,7 +42,6 @@
     self.reader = nil;
     self.matchedLog = nil;
     [self removeObservers];
-    [_activityButton release];
     [super dealloc];
 }
 
