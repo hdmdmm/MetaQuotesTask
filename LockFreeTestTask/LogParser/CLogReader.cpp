@@ -131,14 +131,27 @@ namespace api {
 
     bool LaunchThread(BlockInfo *info) {
         pthread_t tid;
-        
-        info->thread_counter = ++vars::thread_counter;
-        int error = pthread_create(&tid, NULL, &FindMatchesInLines, info);
-        if (error != 0)
-        {
-            printf("\nThread can't be created : [%s]", strerror(error));
+        pthread_attr_t  attr;
+        int error = pthread_attr_init(&attr);
+        if (error != 0) {
+            printf("\nThread can't be created : [%s]\n", strerror(error));
             return false;
         }
+        
+        error = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+        assert(!error);
+        
+        info->thread_counter = ++vars::thread_counter;
+        error = pthread_create(&tid, &attr, &FindMatchesInLines, info);
+        if (error != 0)
+        {
+            printf("\nThread can't be created : [%s]\n", strerror(error));
+            return false;
+        }
+        
+        int result = pthread_attr_destroy(&attr);
+        assert(!result);
+        printf("\nCreated thread with number %d\n", vars::thread_counter);
         return true;
     }
 }
@@ -188,22 +201,36 @@ bool CLogReader::AddSourceBlock(const char *block, const size_t block_size) {
         return false;
     }
 
-    // making copy of block in to BlockInfo
-    BlockInfo *info = (BlockInfo *)malloc(sizeof(BlockInfo));
+    if (vars::search_key == NULL) {
+        printf("Warning! the search_key has null value.");
+        return false;
+    }
+    // making copy of block into BlockInfo
     char *mem = (char *)malloc(block_size + 1);
-    if (mem)
-        memcpy(mem, block, block_size);
+    if (mem == NULL)
+        return false;
+    memcpy(mem, block, block_size);
     
     char *key = NULL;
-    if (vars::search_key) {
-        key = strdup(vars::search_key);
+    size_t key_size = strlen(vars::search_key);
+    key = (char *)malloc(key_size + 1);
+    if (key == NULL) {
+        free(mem);
+        return false;
     }
+    memcpy(key, vars::search_key, key_size);
+    
+    BlockInfo *info = (BlockInfo *)malloc(sizeof(BlockInfo));
     info->data = mem;
     info->key = key;
     info->size = block_size;
 
     // prepare ThreadInfo structure
-    return api::LaunchThread(info);
+    bool result = api::LaunchThread(info);
+    if (!result) {
+        info->free();
+    }
+    return result;
 }
 
 void CLogReader::Cleanup() {
