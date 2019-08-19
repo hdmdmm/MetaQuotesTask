@@ -33,20 +33,27 @@
                                 <textInputTraits key="textInputTraits"/>
                             </textField>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Km-bn-0Sp">
-                                <rect key="frame" x="276" y="412" width="130" height="35"/>
-                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="0.5" colorSpace="custom" customColorSpace="sRGB"/>
+                                <rect key="frame" x="370" y="412" width="36" height="36"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="fga-Hw-b19"/>
+                                    <constraint firstAttribute="width" constant="36" id="oW2-9y-HY2"/>
+                                </constraints>
                                 <fontDescription key="fontDescription" type="system" weight="thin" pointSize="19"/>
-                                <state key="normal" title="button_title_run">
+                                <state key="normal" image="search">
                                     <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 </state>
                                 <connections>
                                     <action selector="activatedSearch:" destination="BYZ-38-t0r" eventType="touchUpInside" id="f2r-Vc-S6x"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="asA-vv-olf">
-                                <rect key="frame" x="376" y="74" width="30" height="41"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
-                                <state key="normal" title="X"/>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="asA-vv-olf">
+                                <rect key="frame" x="370" y="74" width="36" height="36"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="36" id="8U3-NF-J6m"/>
+                                    <constraint firstAttribute="width" constant="36" id="cIr-2T-2a5"/>
+                                </constraints>
+                                <state key="normal" image="close"/>
                                 <connections>
                                     <action selector="activatedClose:" destination="BYZ-38-t0r" eventType="touchUpInside" id="AKP-XC-Smu"/>
                                 </connections>
@@ -96,10 +103,13 @@
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </textView>
-                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yad-fu-EQH">
-                            <rect key="frame" x="858" y="8" width="30" height="39"/>
-                            <fontDescription key="fontDescription" type="system" pointSize="22"/>
-                            <state key="normal" title="X">
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yad-fu-EQH">
+                            <rect key="frame" x="852" y="8" width="36" height="36"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="36" id="DZJ-j3-EyC"/>
+                                <constraint firstAttribute="width" constant="36" id="QbC-QN-118"/>
+                            </constraints>
+                            <state key="normal" image="close">
                                 <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             </state>
                         </button>
@@ -139,4 +149,8 @@
             <point key="canvasLocation" x="103.79464285714285" y="415.94202898550731"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="close" width="72" height="72"/>
+        <image name="search" width="128" height="128"/>
+    </resources>
 </document>
