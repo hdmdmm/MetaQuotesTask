@@ -48,6 +48,9 @@
     // Do any additional setup after loading the view from its nib.
     [self localize];
     [self addObservers];
+    
+    [self.view addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)]];
+    self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";
 }
 
 - (void)localize {
@@ -57,6 +60,10 @@
 }
 
 // actions
+- (void)hideKeyboard:(id)sender {
+    [self.view endEditing:YES];
+}
+
 - (IBAction)activatedSearch:(UIButton *)sender {
     if ([self.urlEditor.text length] == 0
         || [self.filterEditor.text length] == 0){
