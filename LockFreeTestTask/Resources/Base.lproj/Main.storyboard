@@ -96,13 +96,22 @@
                             <fontDescription key="fontDescription" type="system" pointSize="14"/>
                             <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                         </textView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Yad-fu-EQH">
+                            <rect key="frame" x="858" y="8" width="30" height="39"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="22"/>
+                            <state key="normal" title="X">
+                                <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            </state>
+                        </button>
                     </subviews>
                     <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.78446061643835618" colorSpace="custom" customColorSpace="sRGB"/>
                     <constraints>
                         <constraint firstItem="dOG-vE-Kza" firstAttribute="leading" secondItem="wMu-GX-rZL" secondAttribute="leading" constant="30" id="4C9-Gm-cCp"/>
                         <constraint firstAttribute="trailing" secondItem="dOG-vE-Kza" secondAttribute="trailing" constant="60" id="A4R-Ea-ued"/>
+                        <constraint firstItem="Yad-fu-EQH" firstAttribute="top" secondItem="wMu-GX-rZL" secondAttribute="top" constant="8" id="Fs9-OL-27f"/>
                         <constraint firstItem="Yv1-tp-7vM" firstAttribute="leading" secondItem="wMu-GX-rZL" secondAttribute="leading" constant="8" id="Hul-yn-I28"/>
                         <constraint firstAttribute="trailing" secondItem="Yv1-tp-7vM" secondAttribute="trailing" constant="8" id="IpG-oc-tTd"/>
+                        <constraint firstAttribute="trailing" secondItem="Yad-fu-EQH" secondAttribute="trailing" constant="8" id="aNP-CG-jvd"/>
                         <constraint firstItem="Yv1-tp-7vM" firstAttribute="top" secondItem="wMu-GX-rZL" secondAttribute="top" constant="8" id="eIT-m0-VbB"/>
                         <constraint firstItem="Pmz-7z-VdM" firstAttribute="top" secondItem="wMu-GX-rZL" secondAttribute="top" constant="4" id="lzY-J3-fs6"/>
                         <constraint firstItem="dOG-vE-Kza" firstAttribute="top" secondItem="wMu-GX-rZL" secondAttribute="top" constant="10" id="s2u-J5-mar"/>

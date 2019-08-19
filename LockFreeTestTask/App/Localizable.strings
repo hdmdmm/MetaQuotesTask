@@ -12,3 +12,5 @@
 "button_title_stop"         ="Stop";
 "button_title_clear"        ="Clear";
 "progress_loading"          ="Loading";
+
+"err_message_empty_fields"  ="Url and key search must be not empty";

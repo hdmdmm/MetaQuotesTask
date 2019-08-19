@@ -45,10 +45,24 @@
     [super viewDidLoad];
     self.closeButtonHidden = YES;
     // Do any additional setup after loading the view from its nib.
+    [self localize];
+}
+
+- (void)localize {
+    self.urlEditor.placeholder = NSLocalizedString(self.urlEditor.placeholder, nil);
+    self.filterEditor.placeholder = NSLocalizedString(self.filterEditor.placeholder, nil);
+    [self.searchButton setTitle:NSLocalizedString(self.searchButton.currentTitle, nil) forState:UIControlStateNormal];
 }
 
 // actions
 - (IBAction)activatedSearch:(UIButton *)sender {
+    if ([self.urlEditor.text length] == 0
+        || [self.filterEditor.text length] == 0){
+        self.error = [NSError errorWithDomain:@"com.hdmdmm.LockFreeTestTask.LogWindow"
+                                         code:-1000 ///TODO: to enumerate all errors
+                                     userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(@"err_message_empty_fields", nil)}];
+        return;
+    }
     if (_delegate) {
         [_delegate activatedSearchOnController:self];
     }
