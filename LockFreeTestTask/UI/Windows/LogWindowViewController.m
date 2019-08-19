@@ -36,6 +36,7 @@
 @implementation LogWindowViewController
 
 - (void)dealloc {
+    [self removeObservers];
     self.error = nil;
     self.model = nil;
     [super dealloc];
@@ -46,6 +47,7 @@
     self.closeButtonHidden = YES;
     // Do any additional setup after loading the view from its nib.
     [self localize];
+    [self addObservers];
 }
 
 - (void)localize {
@@ -77,5 +79,31 @@
 - (void)setCloseButtonHidden:(BOOL)hidden {
     _closeButtonHidden = hidden;
     [self.closeButton setHidden:hidden];
+}
+
+#pragma mark -Observers
+- (void)addObservers {
+    [self addObserver:self forKeyPath:@"error"
+              options:NSKeyValueObservingOptionNew context:nil];
+}
+
+- (void)removeObservers {
+    [self removeObserver:self forKeyPath:@"error"];
+}
+
+- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
+    if ([keyPath isEqualToString:@"error"]) {
+        [self showError];
+    }
+}
+
+- (void)showError {
+    if (self.error != NULL) {
+        self.inProgress = NO;
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error!!!" message:self.error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+        [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+        [self presentViewController:alert animated:YES completion:nil];
+        self.error = nil;
+    }
 }
 @end
