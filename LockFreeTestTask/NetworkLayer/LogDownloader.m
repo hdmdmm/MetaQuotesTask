@@ -35,6 +35,10 @@
     [[_session dataTaskWithURL:url] resume];
 }
 
+- (void)cancel {
+    [_session invalidateAndCancel];
+}
+
 #pragma mark - NSURLSessionDataDelegate API
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response

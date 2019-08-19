@@ -29,9 +29,11 @@ namespace vars {
 
 typedef struct BlockInfo {
     const char * data;
+    const char * key;
     size_t size;
     int thread_counter = 0;
     void free() {
+        ::free((void *)key);
         ::free((void *)data);
         ::free(this);
     }
@@ -104,7 +106,7 @@ namespace api {
         while( (line_ptr = strsep(&buffer, "\n")) != NULL )
         {
 //            printf("%s\n", line_ptr);
-            if (IsLineMatchToKey(line_ptr, vars::search_key)) {
+            if (IsLineMatchToKey(line_ptr, info->key)) {
                 api::call_back(line_ptr);
             }
             last_line_ptr = line_ptr;
@@ -191,7 +193,13 @@ bool CLogReader::AddSourceBlock(const char *block, const size_t block_size) {
     char *mem = (char *)malloc(block_size + 1);
     if (mem)
         memcpy(mem, block, block_size);
+    
+    char *key = NULL;
+    if (vars::search_key) {
+        key = strdup(vars::search_key);
+    }
     info->data = mem;
+    info->key = key;
     info->size = block_size;
 
     // prepare ThreadInfo structure

@@ -22,5 +22,6 @@
 @property (assign, nonatomic) id<LogReaderDelegate> _Nullable delegate;
 
 - (BOOL)addToParse:(nullable NSData *)part;
+- (void)cancel;
 
 @end

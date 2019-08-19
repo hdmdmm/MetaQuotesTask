@@ -49,6 +49,10 @@
     [super dealloc];
 }
 
+- (void)cancel {
+    //manage by all created threads
+}
+
 - (BOOL)addToParse:(NSData * _Nullable)part {
     return _reader->AddSourceBlock((const char *)part.bytes, part.length);
 }

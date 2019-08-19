@@ -14,3 +14,4 @@
 "progress_loading"          ="Loading";
 
 "err_message_empty_fields"  ="Url and key search must be not empty";
+"err_message_generic"       ="Generic error";

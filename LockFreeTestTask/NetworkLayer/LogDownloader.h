@@ -18,4 +18,5 @@
 @interface LogDownloader: NSObject
 @property(assign, nonatomic) id<LogDownloaderDelegate> _Nullable delegate;
 - (void)loadByUrl:(NSURL * _Nonnull )url;
+- (void)cancel;
 @end
