@@ -11,6 +11,8 @@
 #import "Error+.h"
 #import "LogReader.h"
 
+#define MAX_UPDATE_COUNTER 10
+
 @interface LogWindowViewController () <LogDownloaderDelegate, LogReaderDelegate> {
     dispatch_queue_t _queue;
 }
@@ -87,7 +89,7 @@
     [self.loader loadByUrl:[NSURL URLWithString:self.urlEditor.text]];
     self.inProgress = YES;
     self.isResultReady = NO;
-    _counter = 10;
+    _counter = MAX_UPDATE_COUNTER;
 }
 
 // actions
@@ -198,7 +200,7 @@
         [wself.model appendString:@"\n"];
         [wself.model appendString:@"\n"];
         if (0 < _counter--) return;
-        _counter = 10;
+        _counter = MAX_UPDATE_COUNTER;
         dispatch_async(dispatch_get_main_queue(), ^{
             wself.textView.text = wself.model;
             if (wself.inProgress == YES)
