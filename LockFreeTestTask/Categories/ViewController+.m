@@ -6,7 +6,7 @@
 //  Copyright © 2019 hdmdmm. All rights reserved.
 //
 
-#import "ViewController.h"
+#import <UIKit/UIKit.h>
 
 typedef NS_ENUM(NSUInteger, ViewTag) {
     ViewTagActivity = 1000
