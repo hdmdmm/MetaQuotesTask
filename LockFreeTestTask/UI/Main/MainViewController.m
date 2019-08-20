@@ -123,8 +123,4 @@
     }
 }
 
-//hide close button in case of one page only
-//    if ([controller isKindOfClass: [LogWindowViewController class] ] ) {
-//        ((LogWindowViewController *)controller).closeButtonHidden = [self.logControllers count] == 1;
-//    }
 @end

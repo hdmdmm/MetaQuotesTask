@@ -40,7 +40,9 @@
 @property (strong, nonatomic) NSMutableString *model;
 @end
 
-@implementation LogWindowViewController
+@implementation LogWindowViewController {
+    NSInteger _counter;
+}
 
 - (void)dealloc {
     [self removeObservers];
@@ -85,6 +87,7 @@
     [self.loader loadByUrl:[NSURL URLWithString:self.urlEditor.text]];
     self.inProgress = YES;
     self.isResultReady = NO;
+    _counter = 10;
 }
 
 // actions
@@ -189,16 +192,19 @@
 #pragma mark - LogReaderDelegate API
 - (void)reader:(nullable LogReader *)reader foundLines:(nullable NSString *)lines {
     if (lines == nil) return;
+    __weak typeof (self) wself = self;
     dispatch_async(_queue, ^{
-        [self.model appendString:lines];
-        [self.model appendString:@"\n"];
-        [self.model appendString:@"\n"];
+        [wself.model appendString:lines];
+        [wself.model appendString:@"\n"];
+        [wself.model appendString:@"\n"];
+        if (0 < _counter--) return;
+        _counter = 10;
         dispatch_async(dispatch_get_main_queue(), ^{
-            self.textView.text = self.model;
-            if (self.inProgress == YES)
-                self.inProgress = NO;
-            if (self.isResultReady == NO)
-                self.isResultReady = YES;
+            wself.textView.text = wself.model;
+            if (wself.inProgress == YES)
+                wself.inProgress = NO;
+            if (wself.isResultReady == NO)
+                wself.isResultReady = YES;
         });
     });
 }
