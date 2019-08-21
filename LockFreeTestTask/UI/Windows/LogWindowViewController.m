@@ -40,6 +40,7 @@
 
 //model
 @property (strong, nonatomic) NSMutableString *model;
+@property (strong, nonatomic) NSString *logFileName;
 @end
 
 @implementation LogWindowViewController {
@@ -52,6 +53,7 @@
     self.model = nil;
     self.loader = nil;
     self.reader = nil;
+    self.logFileName = nil;
     dispatch_release(_queue);
     [super dealloc];
 }
@@ -90,6 +92,8 @@
     self.inProgress = YES;
     self.isResultReady = NO;
     _counter = MAX_UPDATE_COUNTER;
+    self.logFileName = [self pathToLogFile];
+    [self cleanupLogFile];
 }
 
 // actions
@@ -159,13 +163,52 @@
     }
 }
 
+#pragma mark -Helpers
+- (NSString *)pathToLogFile {
+    NSString *documentPath = [NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES) firstObject];
+    NSString *logFilePath = [documentPath stringByAppendingPathComponent: [NSString stringWithFormat: @"%@_results", self.filterEditor.text] ];
+    logFilePath = [logFilePath stringByAppendingPathExtension:@"log"];
+    return logFilePath;
+}
+
 - (void)showError {
-    if (self.error != NULL) {
+    if (self.error != nil) {
         self.inProgress = NO;
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error!!!" message:self.error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
         [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
         [self presentViewController:alert animated:YES completion:nil];
         self.error = nil;
+    }
+}
+
+- (void)updateLogView {
+    __weak typeof (self) wself = self;
+    if (0 < _counter--) return;
+    _counter = MAX_UPDATE_COUNTER;
+    dispatch_async(dispatch_get_main_queue(), ^{
+        wself.textView.text = wself.model;
+        if (wself.inProgress == YES)
+            wself.inProgress = NO;
+        if (wself.isResultReady == NO)
+            wself.isResultReady = YES;
+    });
+}
+
+- (void)saveToLogFile:(nullable NSString*)lines {
+    NSError *error = nil;
+    if (![lines writeToFile:self.logFileName atomically:YES encoding:NSUTF8StringEncoding error:&error]) {
+        NSLog(@"Couldn't write lines to file %@\nError = %@", self.logFileName, error);
+    }
+}
+
+- (void)cleanupLogFile {
+    if (!self.logFileName || [self.logFileName length] == 0 )
+        return;
+    
+    NSError *error = nil;
+    NSFileManager *fm = [NSFileManager defaultManager];
+    if (![fm removeItemAtPath:self.logFileName error:&error]) {
+        NSLog(@"Couldn't remove file %@ (%@)", error, self.logFileName);
     }
 }
 
@@ -199,15 +242,8 @@
         [wself.model appendString:lines];
         [wself.model appendString:@"\n"];
         [wself.model appendString:@"\n"];
-        if (0 < _counter--) return;
-        _counter = MAX_UPDATE_COUNTER;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            wself.textView.text = wself.model;
-            if (wself.inProgress == YES)
-                wself.inProgress = NO;
-            if (wself.isResultReady == NO)
-                wself.isResultReady = YES;
-        });
+        [wself saveToLogFile:lines];
+        [wself updateLogView];
     });
 }
 
