@@ -47,7 +47,7 @@ namespace api {
     bool IsLineMatchToKey(const char * line, const char * key) {
         // Written by Jack Handy - <A href="mailto:jakkhandy@hotmail.com">jakkhandy@hotmail.com</A>
         const char *cp = NULL, *mp = NULL;
-        
+
         while ((*line) && (*key != '*')) {
             if ((*key != *line) && (*key != '?')) {
                 return 0;
@@ -55,7 +55,7 @@ namespace api {
             key++;
             line++;
         }
-        
+
         while (*line) {
             if (*key == '*') {
                 if (!*++key) {
@@ -71,58 +71,71 @@ namespace api {
                 line = cp++;
             }
         }
-    
+
         return !*key;
     }
     
+    void SaveAppendix(const char* appendix) {
+        if (!appendix) return;
+        size_t size_last_line = strlen(appendix);
+        if ( size_last_line && vars::appendix == NULL )
+            vars::appendix = strdup(appendix);
+    }
+
     void *FindMatchesInLines(void *arg) {
         BlockInfo * info = (BlockInfo *)arg;
         pthread_mutex_lock(&vars::mutex);
         printf("Started thread number %d\n", info->thread_counter);
         
         // getting appendix_size if it stored from previous block
-        // the urlsession loads log file dividing in to parts that ends not '\n'.
-        // In this case previous part contains not completed line and next part begins from final part of line.
+        // the urlsession loads log file by short parts. Every part might finish not by '\n'.
+        // In this case previous part contains not completed line and next part begins from final previous part of line.
         char *buffer = NULL;
         if (vars::appendix)
-        {
+        {/// I really don't understand why but works for me based on memory api: memcpy, malloc
+         /// I tryed strcat - smth going with memory
             size_t appendix_size = strlen(vars::appendix);
-            buffer = (char *)malloc(appendix_size + info->size + 1); //allocated memory
+            size_t size = appendix_size + info->size;
+            buffer = (char*)malloc(size +1);
             memcpy(buffer, vars::appendix, appendix_size);
-            memcpy(&buffer[appendix_size], info->data, info->size);
+            memcpy(buffer + appendix_size, info->data, info->size);
+            buffer[size] = '\0';
             free(vars::appendix);
             vars::appendix = NULL;
         }
-
-        if (buffer == NULL)
-        {
-            buffer = (char *)malloc(info->size);
-            memcpy(buffer, info->data, info->size);
-        }
+        
         // search for lines in the buffer
-        char *freed_buffer = buffer;
-        char *line_ptr = NULL;
-        char *last_line_ptr = NULL;
-        while( (line_ptr = strsep(&buffer, "\n")) != NULL )
-        {
-//            printf("%s\n", line_ptr);
-            if (IsLineMatchToKey(line_ptr, info->key)) {
-                api::call_back(line_ptr);
+        // strtok, strsep are not works for me. smth going with memory. can't free allocated buffer
+        // current solution works for me as well.
+        char *block = buffer == NULL ? (char *)info->data : buffer;
+        while (*block=='\n') block++;
+        char *line_ptr = block;
+        while (*block++) {
+            if (*block == '\n') {
+                block++;
+                if (*block == '\0') {
+                    line_ptr = NULL;
+                    break;
+                }
+                size_t line_size = block-line_ptr;
+                char *copied_line = strndup(line_ptr, line_size-1);
+                if (IsLineMatchToKey(copied_line, info->key)){
+                    api::call_back(copied_line);
+                }
+                //
+                line_ptr = block;
+                free(copied_line);
             }
-            last_line_ptr = line_ptr;
         }
 
-        // store appendix if last line is not completed.
-        size_t size_last_line = strlen(last_line_ptr);
-        if (last_line_ptr[size_last_line] != '\n' && vars::appendix == NULL)
-        {
-            vars::appendix = strdup(last_line_ptr);
-        }
+        // store appendix if last line is not completed end line sign \n.
+        SaveAppendix(line_ptr);
+        if (buffer != NULL)
+            free(buffer);
 
         //free memory
         int thread_number = info->thread_counter;
         info->free();
-        free(freed_buffer);
         
         pthread_mutex_unlock(&vars::mutex);
         printf("Finished thread number %d\n", thread_number);
@@ -160,37 +173,23 @@ CLogReader::CLogReader(function<void(const char *)> call_back)
 {
     vars::search_key = NULL;
     vars::appendix = NULL;
-    
     vars::mutex = PTHREAD_MUTEX_INITIALIZER;
-
     api::call_back = call_back;
 }
 
 CLogReader::~CLogReader()
 {
     pthread_mutex_destroy(&vars::mutex);
-
     Cleanup();
     free(vars::blocks);
 }
 
 bool CLogReader::SetFilter(const char *filter)
 {
-    if (filter == NULL) {
-        return false;
-    }
-    void * container = malloc(strlen(filter)+1);
-    if (container == NULL)
-    {
-        return false;
-    }
-    char * copiedFilter = strcpy((char *)container, filter);
-    if (copiedFilter == NULL)
-    {
-        return false;
-    }
+    if (filter == NULL) { return false; }
     Cleanup();
-    vars::search_key = copiedFilter;
+    vars::search_key = strdup(filter);
+    if (vars::search_key == NULL) { return false; }
     return true;
 }
 
@@ -202,23 +201,19 @@ bool CLogReader::AddSourceBlock(const char *block, const size_t block_size) {
     }
 
     if (vars::search_key == NULL) {
-        printf("Warning! the search_key has null value.");
+        printf("Warning! the search_key has null value");
         return false;
     }
+
     // making copy of block into BlockInfo
-    char *mem = (char *)malloc(block_size + 1);
-    if (mem == NULL)
-        return false;
-    memcpy(mem, block, block_size);
+    char *mem = strdup(block);
+    if (mem == NULL) { return false; }
     
-    char *key = NULL;
-    size_t key_size = strlen(vars::search_key);
-    key = (char *)malloc(key_size + 1);
-    if (key == NULL) {
+    char *key = strdup(vars::search_key);
+    if (!key) {
         free(mem);
         return false;
     }
-    memcpy(key, vars::search_key, key_size);
     
     BlockInfo *info = (BlockInfo *)malloc(sizeof(BlockInfo));
     info->data = mem;

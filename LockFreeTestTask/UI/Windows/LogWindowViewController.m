@@ -137,12 +137,9 @@
 
 #pragma mark -Observers
 - (void)addObservers {
-    [self addObserver:self forKeyPath:@"error"
-              options:NSKeyValueObservingOptionNew context:nil];
-    [self addObserver:self forKeyPath:@"inProgress"
-              options:NSKeyValueObservingOptionNew context:nil];
-    [self addObserver:self forKeyPath:@"isResultReady"
-              options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"inProgress" options:NSKeyValueObservingOptionNew context:nil];
+    [self addObserver:self forKeyPath:@"isResultReady" options:NSKeyValueObservingOptionNew context:nil];
 }
 
 - (void)removeObservers {
@@ -174,9 +171,9 @@
 - (void)showError {
     if (self.error != nil) {
         self.inProgress = NO;
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error!!!" message:self.error.localizedDescription preferredStyle:UIAlertControllerStyleAlert];
+        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error!!!" message:self.error.localizedDescription preferredStyle: UIAlertControllerStyleAlert];
         [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController:alert animated:YES completion:nil];
+        [self presentViewController: alert animated:YES completion:nil];
         self.error = nil;
     }
 }

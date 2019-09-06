@@ -18,8 +18,7 @@
 - (instancetype)init {
     if (self = [super init]) {
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
-        config.timeoutIntervalForRequest = 10;
-//        config.timeoutIntervalForResource = 10;
+        config.timeoutIntervalForRequest = 20;
         self.session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
     }
     return self;
