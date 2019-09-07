@@ -7,11 +7,13 @@
 //
 
 #import "LogDownloader.h"
+#define MAX_BUFFER_SIZE 1024*1000*2
 @interface LogDownloader() <NSURLSessionDataDelegate> {
-    NSUInteger receivedBytes;
-    NSUInteger contentLength;
+    NSUInteger _receivedBytes;
+    NSUInteger _contentLength;
 }
-@property (retain, nonatomic) NSURLSession * session;
+@property (retain, nonatomic) NSURLSession *session;
+@property (retain, nonatomic) NSMutableData *buffer;
 @end
 
 @implementation LogDownloader
@@ -20,13 +22,15 @@
         NSURLSessionConfiguration *config = [NSURLSessionConfiguration defaultSessionConfiguration];
         config.timeoutIntervalForRequest = 20;
         self.session = [NSURLSession sessionWithConfiguration:config delegate:self delegateQueue:[NSOperationQueue mainQueue]];
+        self.buffer = [NSMutableData dataWithCapacity:MAX_BUFFER_SIZE];
     }
     return self;
 }
 
 - (void)dealloc {
-    [_session finishTasksAndInvalidate];
-    [_session release];
+    self.buffer = nil;
+    [self.session finishTasksAndInvalidate];
+    self.session = nil;
     [super dealloc];
 }
 
@@ -43,20 +47,35 @@
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveResponse:(NSURLResponse *)response
 completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
     
-    contentLength = [[[(NSHTTPURLResponse *)response allHeaderFields] valueForKey:@"Content-Length"] integerValue];
-    completionHandler( receivedBytes == contentLength ? NSURLSessionResponseCancel : NSURLSessionResponseAllow );
-    [self.delegate loader:self contentLength:contentLength];
-    NSLog(@"\nContent-length: %ld\nReceived-bytes: %ld", (long)contentLength, (long)receivedBytes);
+    _contentLength = [[[(NSHTTPURLResponse *)response allHeaderFields] valueForKey:@"Content-Length"] integerValue];
+    completionHandler( _receivedBytes == _contentLength ? NSURLSessionResponseCancel : NSURLSessionResponseAllow );
+    [self.delegate loader:self contentLength:_contentLength];
+    NSLog(@"\nContent-length: %ld\nReceived-bytes: %ld", (long)_contentLength, (long)_receivedBytes);
 }
 
 - (void)URLSession:(NSURLSession *)session dataTask:(NSURLSessionDataTask *)dataTask didReceiveData:(NSData *)data {
-    receivedBytes += data.length;
+    _receivedBytes += data.length;
     NSLog(@"\nReceived package: %ld bytes", (long)data.length );
-    [self.delegate loader:self loadedPart:data];
-    float progress = (float)receivedBytes/(float)contentLength;
+    float progress = (float)_receivedBytes/(float)_contentLength;
     [self.delegate loader:self progress:progress];
+    // store received data to buffer
+    [self.buffer appendData:data];
+    //check for discharge of buffer
+    if (self.buffer.length > MAX_BUFFER_SIZE - 1024*16) { // -16Kb
+        [self deliverLoadedData];
+    }
 }
 
+- (void)deliverLoadedData {
+    __block NSData *buffer = [self.buffer retain];//
+    __block __weak typeof(self) _weakSelf = self;
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        [_delegate loader:_weakSelf loadedPart:buffer];
+        [buffer release];
+    });
+    // create new buffer
+    self.buffer = [NSMutableData dataWithCapacity:MAX_BUFFER_SIZE];
+}
 #pragma mark - NSURLSessionDelegate API
 - (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(nullable NSError *)error {
     [self.delegate loader:self completedWith:error];
@@ -65,7 +84,7 @@ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))complet
 #pragma mark - NSURLSessionTaskDelegate API
 - (void)URLSession:(NSURLSession *)session task:(nonnull NSURLSessionTask *)task didCompleteWithError:(nullable NSError *)error {
     [self.delegate loader:self completedWith:error];
-    NSLog(@"\nReceived log file: %ld", (long)receivedBytes );
+    NSLog(@"\nReceived log file: %ld", (long)_receivedBytes );
 }
 
 @end
