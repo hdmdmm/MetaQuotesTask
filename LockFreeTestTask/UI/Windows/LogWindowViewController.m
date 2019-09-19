@@ -168,8 +168,6 @@
 
 - (void)updateLogView {
     __weak typeof (self) wself = self;
-    if (0 < _counter--) return;
-    _counter = MAX_UPDATE_COUNTER;
     dispatch_async(dispatch_get_main_queue(), ^{
         wself.textView.text = wself.model;
         wself.inProgress = NO;
@@ -220,14 +218,22 @@
 #pragma mark - LogReaderDelegate API
 - (void)reader:(nullable LogReader *)reader foundLines:(nullable NSString *)lines {
     if (lines == nil) return;
-    __weak typeof (self) wself = self;
-    dispatch_async(_queue, ^{
-        [wself.model appendString:lines];
-        [wself.model appendString:@"\n"];
-        [wself.model appendString:@"\n"];
-        [wself saveToLogFile:lines];
-        [wself updateLogView];
-    });
+
+    [self.model appendString:lines];
+    [self.model appendString:@"\n"];
+    [self.model appendString:@"\n"];
+    [self saveToLogFile:lines];
+    
+    if (0 < _counter--) return;
+    _counter = MAX_UPDATE_COUNTER;
+
+    [self updateLogView];
+    
+//    __weak typeof (self) wself = self;
+//    dispatch_async(_queue, ^{
+//        [wself saveToLogFile: lines];
+//        [wself updateLogView];
+//    });
 }
 
 - (void)reader:(nullable LogReader *)reader completedWithError:(nullable NSError *)error {
