@@ -83,7 +83,6 @@
     if (self.buffer.length > MAX_BUFFER_SIZE - 1024*16) { // -16Kb
         
         [self deliverLoadedData];
-        
         // create new buffer
         self.buffer = [NSMutableData dataWithCapacity:MAX_BUFFER_SIZE];
     }

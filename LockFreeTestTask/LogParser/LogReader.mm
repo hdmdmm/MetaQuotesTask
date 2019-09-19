@@ -56,7 +56,10 @@
 }
 
 - (void)setKey:(NSString *)key {
-    if (![key isKindOfClass:[NSNull class]] && !_reader->SetFilter(key.UTF8String)) {
+    if (![key isKindOfClass:[NSNull class]]
+        && _reader != NULL
+        && !_reader->SetFilter(key.UTF8String)) {
+        
         NSLog(@"Error!!! Parser. Couldn't set filter key");
         return;
     }

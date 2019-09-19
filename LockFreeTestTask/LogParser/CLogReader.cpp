@@ -12,8 +12,6 @@
 #import <pthread.h>
 #include <unistd.h>
 
-#define MAX_PACKAGES 20 //is count of cells for (char*) pointers to string blocks
-
 namespace vars {
     char *appendix = NULL;
     char *search_key = NULL;
