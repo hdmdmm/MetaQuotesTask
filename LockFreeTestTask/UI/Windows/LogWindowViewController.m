@@ -233,5 +233,9 @@
 - (void)reader:(nullable LogReader *)reader completedWithError:(nullable NSError *)error {
     self.error = error;
     self.reader = nil;
+    
+    //write last values if amount of lines less then MAX_UPDATE_COUNTER
+    _counter = 0;
+    [self updateLogView];
 }
 @end
