@@ -11,7 +11,7 @@
 #import "Error+.h"
 #import "LogReader.h"
 
-#define MAX_UPDATE_COUNTER 10
+#define MAX_UPDATE_COUNTER 20
 
 @interface LogWindowViewController () <LogDownloaderDelegate, LogReaderDelegate> {
     dispatch_queue_t _queue;
@@ -67,7 +67,9 @@
     [self.view addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)]];
     self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";
     
-    _queue = dispatch_queue_create("com.hdmdmm.lockfreetesttask.outputqueue", DISPATCH_QUEUE_SERIAL);
+    dispatch_queue_attr_t attr =
+        dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
+    _queue = dispatch_queue_create("com.hdmdmm.lockfreetesttask.outputqueue", attr);
 }
 
 - (void)localize {
@@ -170,8 +172,8 @@
     _counter = MAX_UPDATE_COUNTER;
     dispatch_async(dispatch_get_main_queue(), ^{
         wself.textView.text = wself.model;
-            wself.inProgress = NO;
-            wself.isResultReady = YES;
+        wself.inProgress = NO;
+        wself.isResultReady = YES;
     });
 }
 
