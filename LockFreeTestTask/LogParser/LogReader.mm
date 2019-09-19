@@ -13,14 +13,13 @@
     CLogReader * _reader;
 }
 
-- (void)addObservers;
-
 @end
 
 @implementation LogReader
 
 - (nullable instancetype)init {
     if (self = [super init]) {
+        
         //lamda to process process matched lines
         __weak typeof(self) _wself = self;
         auto callBack = [=](const char *linePtr) {
@@ -31,10 +30,9 @@
         
         _reader = new CLogReader(callBack);
         if (!_reader) {
-            self = nil;
+            [self release];
             return nil;
         }
-        [self addObservers];
 
     }
     return self;
@@ -57,17 +55,11 @@
     return _reader->AddSourceBlock((const char *)part.bytes, part.length);
 }
 
-- (void)addObservers {
-    [self addObserver:self forKeyPath:@"key" options:NSKeyValueObservingOptionNew context:nil];
-}
-
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if ( [keyPath isEqualToString:@"key"] ) {
-        NSString * key = change[NSKeyValueChangeNewKey];
-        if (![key isKindOfClass:[NSNull class]] && !_reader->SetFilter(key.UTF8String)) {
-            NSLog(@"Error!!! Parser. Couldn't set filter key");
-            return;
-        }
+- (void)setKey:(NSString *)key {
+    if (![key isKindOfClass:[NSNull class]] && !_reader->SetFilter(key.UTF8String)) {
+        NSLog(@"Error!!! Parser. Couldn't set filter key");
+        return;
     }
 }
+
 @end

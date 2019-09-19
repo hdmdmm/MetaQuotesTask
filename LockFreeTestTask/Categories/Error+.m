@@ -11,7 +11,7 @@
 static NSString *domain = @"com.hdmdmm.LockFreeTestTask.Errors";
 
 @implementation NSError(LockFreeTestTask)
-+ (NSError *)errorWithCode:(LockFreeError)code {
++ (NSError *)errorWithCode:(AppError)code {
     NSString * localizedString = @"";
     switch (code) {
         case LockFreeErrorInputFields:

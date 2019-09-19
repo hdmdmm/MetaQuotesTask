@@ -48,7 +48,6 @@
 }
 
 - (void)dealloc {
-    [self removeObservers];
     self.error = nil;
     self.model = nil;
     self.loader = nil;
@@ -64,7 +63,6 @@
     // Do any additional setup after loading the view from its nib.
     [self localize];
     [self setupButtons];
-    [self addObservers];
     
     [self.view addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)]];
     self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";
@@ -136,28 +134,16 @@
 }
 
 #pragma mark -Observers
-- (void)addObservers {
-    [self addObserver:self forKeyPath:@"error" options:NSKeyValueObservingOptionNew context:nil];
-    [self addObserver:self forKeyPath:@"inProgress" options:NSKeyValueObservingOptionNew context:nil];
-    [self addObserver:self forKeyPath:@"isResultReady" options:NSKeyValueObservingOptionNew context:nil];
+- (void)setError:(NSError *)error {
+    [self showError:error];
 }
 
-- (void)removeObservers {
-    [self removeObserver:self forKeyPath:@"error"];
-    [self removeObserver:self forKeyPath:@"inProgress"];
-    [self removeObserver:self forKeyPath:@"isResultReady"];
+- (void)setInProgress:(BOOL)inProgress {
+    [self setHiddenActivityIndicator:!inProgress];
 }
 
-- (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSKeyValueChangeKey,id> *)change context:(void *)context {
-    if ([keyPath isEqualToString:@"error"]) {
-        [self showError];
-    }
-    if ([keyPath isEqualToString:@"inProgress"]) {
-        [self setHiddenActivityIndicator:![change[NSKeyValueChangeNewKey] boolValue]];
-    }
-    if ([keyPath isEqualToString:@"isResultReady"]) {
-        [self.logView setHidden:![change[NSKeyValueChangeNewKey] boolValue]];
-    }
+- (void)setIsResultReady:(BOOL)isResultReady {
+    [self.logView setHidden:!isResultReady];
 }
 
 #pragma mark -Helpers
@@ -168,8 +154,8 @@
     return logFilePath;
 }
 
-- (void)showError {
-    if (self.error != nil) {
+- (void)showError:(NSError *)error {
+    if (error != nil) {
         self.inProgress = NO;
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error!!!" message:self.error.localizedDescription preferredStyle: UIAlertControllerStyleAlert];
         [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
@@ -184,9 +170,7 @@
     _counter = MAX_UPDATE_COUNTER;
     dispatch_async(dispatch_get_main_queue(), ^{
         wself.textView.text = wself.model;
-        if (wself.inProgress == YES)
             wself.inProgress = NO;
-        if (wself.isResultReady == NO)
             wself.isResultReady = YES;
     });
 }

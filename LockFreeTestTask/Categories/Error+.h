@@ -10,12 +10,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef NS_ENUM(NSInteger, LockFreeError) {
+typedef NS_ENUM(NSInteger, AppError) {
     LockFreeErrorInputFields = -1000
 };
 
 @interface NSError(LockFreeTestTask)
-+ (NSError *)errorWithCode:(LockFreeError)code;
++ (NSError *)errorWithCode:(AppError)code;
 @end
 
 NS_ASSUME_NONNULL_END
