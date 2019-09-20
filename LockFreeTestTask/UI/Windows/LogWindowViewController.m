@@ -11,7 +11,7 @@
 #import "Error+.h"
 #import "LogReader.h"
 
-#define MAX_UPDATE_COUNTER 20
+//#define MAX_UPDATE_COUNTER 20
 
 @interface LogWindowViewController () <LogDownloaderDelegate, LogReaderDelegate> {
     dispatch_queue_t _queue;
@@ -28,7 +28,8 @@
 
 //result view
 @property (weak, nonatomic) IBOutlet UIView *logView;
-@property (weak, nonatomic) IBOutlet UITextView *textView;
+//@property (weak, nonatomic) IBOutlet UITextView *textView;
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *closeLogViewButton;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @property (weak, nonatomic) IBOutlet UILabel *progressLabel;
@@ -41,10 +42,12 @@
 //model
 @property (strong, nonatomic) NSMutableString *model;
 @property (strong, nonatomic) NSString *logFileName;
+
+@property (strong, nonatomic) NSMutableArray<NSString *> *models;
 @end
 
 @implementation LogWindowViewController {
-    NSInteger _counter;
+//    NSInteger _counter;
 }
 
 - (void)dealloc {
@@ -53,6 +56,7 @@
     self.loader = nil;
     self.reader = nil;
     self.logFileName = nil;
+    self.models = nil;
     dispatch_release(_queue);
     [super dealloc];
 }
@@ -63,9 +67,11 @@
     // Do any additional setup after loading the view from its nib.
     [self localize];
     [self setupButtons];
-    
+
     [self.view addGestureRecognizer: [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(hideKeyboard:)]];
     self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";
+    
+    self.models = [NSMutableArray arrayWithCapacity:20];
     
     dispatch_queue_attr_t attr =
         dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
@@ -91,7 +97,7 @@
     [self.loader loadByUrl:[NSURL URLWithString:self.urlEditor.text]];
     self.inProgress = YES;
     self.isResultReady = NO;
-    _counter = MAX_UPDATE_COUNTER;
+//    _counter = MAX_UPDATE_COUNTER;
     self.logFileName = [self pathToLogFile];
     [self cleanupLogFile];
 }
@@ -112,7 +118,10 @@
         [_delegate activatedSearchOnController:self];
     }
     [self.view endEditing:YES];
-    self.textView.text = nil;
+
+    [self.models removeAllObjects];
+    [self.tableView reloadData];
+
     [self startLoading];
 }
 
@@ -169,7 +178,8 @@
 - (void)updateLogView {
     __weak typeof (self) wself = self;
     dispatch_async(dispatch_get_main_queue(), ^{
-        wself.textView.text = wself.model;
+        [wself.tableView reloadData];
+//        wself.textView.text = wself.model;
         wself.inProgress = NO;
         wself.isResultReady = YES;
     });
@@ -216,16 +226,17 @@
 }
 
 #pragma mark - LogReaderDelegate API
-- (void)reader:(nullable LogReader *)reader foundLines:(nullable NSString *)lines {
-    if (lines == nil) return;
+- (void)reader:(nullable LogReader *)reader foundLine:(nullable NSString *)line {
+    if (line == nil) return;
 
-    [self.model appendString:lines];
-    [self.model appendString:@"\n"];
-    [self.model appendString:@"\n"];
-    [self saveToLogFile:lines];
+    [self.models addObject:line];
+//    [self.model appendString:lines];
+//    [self.model appendString:@"\n"];
+//    [self.model appendString:@"\n"];
+    [self saveToLogFile:line];
     
-    if (0 < _counter--) return;
-    _counter = MAX_UPDATE_COUNTER;
+//    if (0 < _counter--) return;
+//    _counter = MAX_UPDATE_COUNTER;
 
     [self updateLogView];
     
@@ -241,7 +252,29 @@
     self.reader = nil;
     
     //write last values if amount of lines less then MAX_UPDATE_COUNTER
-    _counter = 0;
-    [self updateLogView];
+//    _counter = 0;
+//    [self updateLogView];
 }
+@end
+
+@interface LogWindowViewController(TableView) <UITableViewDelegate, UITableViewDataSource>
+@end
+
+@implementation LogWindowViewController(TableView)
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return self.models.count;
+}
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"LogLineCell"];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"LogLineCell"];
+    }
+    cell.textLabel.text = self.models[indexPath.row];
+    cell.textLabel.textColor = [UIColor greenColor];
+    cell.textLabel.numberOfLines = 0;
+    return cell;
+}
+
 @end

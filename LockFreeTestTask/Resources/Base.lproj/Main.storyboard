@@ -61,9 +61,13 @@
                                     <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" translatesAutoresizingMaskIntoConstraints="NO" id="dOG-vE-Kza">
                                         <rect key="frame" x="30" y="878" width="324" height="2"/>
                                     </progressView>
-                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kYl-gy-StG">
+                                    <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="kYl-gy-StG">
                                         <rect key="frame" x="8" y="12" width="398" height="860"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                                        <connections>
+                                            <outlet property="dataSource" destination="BYZ-38-t0r" id="DVq-uc-5dI"/>
+                                            <outlet property="delegate" destination="BYZ-38-t0r" id="r17-g6-egO"/>
+                                        </connections>
                                     </tableView>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Pmz-7z-VdM">
                                         <rect key="frame" x="362" y="871.66666666666663" width="31" height="15"/>
@@ -130,6 +134,7 @@
                         <outlet property="progressLabel" destination="Pmz-7z-VdM" id="rDa-Xd-pUX"/>
                         <outlet property="progressView" destination="dOG-vE-Kza" id="PaE-QX-hMV"/>
                         <outlet property="searchButton" destination="0Km-bn-0Sp" id="Iqv-Ei-6IJ"/>
+                        <outlet property="tableView" destination="kYl-gy-StG" id="V2K-a4-DxF"/>
                         <outlet property="urlEditor" destination="pdB-WQ-spA" id="BSY-Jt-Rxk"/>
                     </connections>
                 </viewController>

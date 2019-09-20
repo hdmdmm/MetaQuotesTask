@@ -24,7 +24,7 @@
         __weak typeof(self) _wself = self;
         auto callBack = [=](const char *linePtr) {
             NSString *string = [NSString stringWithCString:linePtr encoding:NSUTF8StringEncoding];
-            [_delegate reader:_wself foundLines:string];
+            [_delegate reader:_wself foundLine:string];
             return true;
         };
         

@@ -12,8 +12,7 @@
 @class LogReader;
 
 @protocol LogReaderDelegate <NSObject>
- //The string has all found lines that are separated by '\n'
-- (void)reader:(nullable LogReader *)reader foundLines:(nullable NSString *)lines;
+- (void)reader:(nullable LogReader *)reader foundLine:(nullable NSString *)line;
 - (void)reader:(nullable LogReader *)reader completedWithError:(nullable NSError *)error;
 @end
 
