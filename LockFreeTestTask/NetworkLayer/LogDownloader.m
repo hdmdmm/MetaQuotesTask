@@ -96,7 +96,10 @@
 
 #pragma mark - NSURLSessionTaskDelegate API
 - (void)URLSession:(NSURLSession *)session task:(nonnull NSURLSessionTask *)task didCompleteWithError:(nullable NSError *)error {
-    
+    // if buffer has saved last data and length < MAX_BUFFER_SIZE - 16Kb
+    if (self.buffer.length != 0 ) {
+        [self deliverLoadedData];
+    }
     [self.delegate loader:self completedWith:error];
     NSLog(@"\nReceived log file: %ld", (long)_receivedBytes );
 }
