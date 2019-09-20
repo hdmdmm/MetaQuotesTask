@@ -11,8 +11,6 @@
 #import "Error+.h"
 #import "LogReader.h"
 
-//#define MAX_UPDATE_COUNTER 20
-
 @interface LogWindowViewController () <LogDownloaderDelegate, LogReaderDelegate> {
     dispatch_queue_t _queue;
 }
@@ -28,7 +26,6 @@
 
 //result view
 @property (weak, nonatomic) IBOutlet UIView *logView;
-//@property (weak, nonatomic) IBOutlet UITextView *textView;
 @property (weak, nonatomic) IBOutlet UITableView *tableView;
 @property (weak, nonatomic) IBOutlet UIButton *closeLogViewButton;
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
@@ -40,19 +37,15 @@
 @property (strong, nonatomic) NSError *error;
 
 //model
-@property (strong, nonatomic) NSMutableString *model;
 @property (strong, nonatomic) NSString *logFileName;
 
 @property (strong, nonatomic) NSMutableArray<NSString *> *models;
 @end
 
-@implementation LogWindowViewController {
-//    NSInteger _counter;
-}
+@implementation LogWindowViewController
 
 - (void)dealloc {
     self.error = nil;
-    self.model = nil;
     self.loader = nil;
     self.reader = nil;
     self.logFileName = nil;
@@ -91,13 +84,11 @@
 }
 
 - (void)startLoading {
-    self.model = [NSMutableString string];
     self.loader = [[LogDownloader new] autorelease];
     [self.loader setDelegate:self];
     [self.loader loadByUrl:[NSURL URLWithString:self.urlEditor.text]];
     self.inProgress = YES;
     self.isResultReady = NO;
-//    _counter = MAX_UPDATE_COUNTER;
     self.logFileName = [self pathToLogFile];
     [self cleanupLogFile];
 }
@@ -179,7 +170,6 @@
     __weak typeof (self) wself = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         [wself.tableView reloadData];
-//        wself.textView.text = wself.model;
         wself.inProgress = NO;
         wself.isResultReady = YES;
     });
@@ -230,30 +220,14 @@
     if (line == nil) return;
 
     [self.models addObject:line];
-//    [self.model appendString:lines];
-//    [self.model appendString:@"\n"];
-//    [self.model appendString:@"\n"];
     [self saveToLogFile:line];
-    
-//    if (0 < _counter--) return;
-//    _counter = MAX_UPDATE_COUNTER;
 
     [self updateLogView];
-    
-//    __weak typeof (self) wself = self;
-//    dispatch_async(_queue, ^{
-//        [wself saveToLogFile: lines];
-//        [wself updateLogView];
-//    });
 }
 
 - (void)reader:(nullable LogReader *)reader completedWithError:(nullable NSError *)error {
     self.error = error;
     self.reader = nil;
-    
-    //write last values if amount of lines less then MAX_UPDATE_COUNTER
-//    _counter = 0;
-//    [self updateLogView];
 }
 @end
 
@@ -272,7 +246,9 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"LogLineCell"];
     }
     cell.textLabel.text = self.models[indexPath.row];
-    cell.textLabel.textColor = [UIColor greenColor];
+    cell.contentView.backgroundColor = [UIColor clearColor];
+    cell.backgroundColor = [UIColor clearColor];
+    cell.textLabel.textColor = [[UIColor greenColor] colorWithAlphaComponent:.85];
     cell.textLabel.numberOfLines = 0;
     return cell;
 }
