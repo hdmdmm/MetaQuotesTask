@@ -11,10 +11,8 @@
 #import "Error+.h"
 #import "LogReader.h"
 
-@interface LogWindowViewController () <LogDownloaderDelegate, LogReaderDelegate> {
-    dispatch_queue_t _queue;
-}
-//
+@interface LogWindowViewController () <LogDownloaderDelegate, LogReaderDelegate>
+//services
 @property (strong, nonatomic) LogReader *reader;
 @property (strong, nonatomic) LogDownloader *loader;
 
@@ -50,7 +48,6 @@
     self.reader = nil;
     self.logFileName = nil;
     self.models = nil;
-    dispatch_release(_queue);
     [super dealloc];
 }
 
@@ -65,10 +62,6 @@
     self.urlEditor.text = @"https://testlogstorage.s3.eu-north-1.amazonaws.com/access.log";
     
     self.models = [NSMutableArray arrayWithCapacity:20];
-    
-    dispatch_queue_attr_t attr =
-        dispatch_queue_attr_make_with_qos_class(DISPATCH_QUEUE_SERIAL, DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0);
-    _queue = dispatch_queue_create("com.hdmdmm.lockfreetesttask.outputqueue", attr);
 }
 
 - (void)localize {
@@ -230,6 +223,8 @@
     self.reader = nil;
 }
 @end
+
+
 
 @interface LogWindowViewController(TableView) <UITableViewDelegate, UITableViewDataSource>
 @end
