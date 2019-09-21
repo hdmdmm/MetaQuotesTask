@@ -27,8 +27,11 @@
             [_delegate reader:_wself foundLine:string];
             return true;
         };
+        auto endCallBack = [=](void) {
+            [_delegate reader:_wself completedWithError:nil];
+        };
         
-        _reader = new CLogReader(callBack);
+        _reader = new CLogReader( callBack, endCallBack );
         if (!_reader) {
             [self release];
             return nil;

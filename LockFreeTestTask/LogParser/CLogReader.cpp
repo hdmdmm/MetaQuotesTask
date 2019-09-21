@@ -40,6 +40,7 @@ typedef struct BlockInfo {
 namespace api {
 
     function<void(const char *)> call_back;
+    function<void(void)> end_call_back;
     // * - match to any symbols with any length
     // ? - match to any symbols. one symbol only.
     bool IsLineMatchToKey(const char * line, const char * key) {
@@ -137,6 +138,11 @@ namespace api {
         
         pthread_mutex_unlock(&vars::mutex);
         printf("Finished thread number %d\n", thread_number);
+        
+        //marker of last created thread
+        if (thread_number == vars::thread_counter) {
+            api::end_call_back();
+        }
         return NULL;
     }
 
@@ -176,12 +182,13 @@ namespace api {
     }
 }
 
-CLogReader::CLogReader(function<void(const char *)> call_back)
+CLogReader::CLogReader(function<void(const char *)> call_back, function<void(void)> end_call_back)
 {
     vars::search_key = NULL;
     vars::appendix = NULL;
     vars::mutex = PTHREAD_MUTEX_INITIALIZER;
     api::call_back = call_back;
+    api::end_call_back = end_call_back;
 }
 
 CLogReader::~CLogReader()

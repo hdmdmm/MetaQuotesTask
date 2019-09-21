@@ -95,7 +95,7 @@
 - (IBAction)activatedSearch:(UIButton *)sender {
     if ([self.urlEditor.text length] == 0
         || [self.filterEditor.text length] == 0){
-        self.error = [NSError errorWithCode:LockFreeErrorInputFields];
+        self.error = [NSError errorWithCode:AppErrorInputFields];
         return;
     }
     if (_delegate) {
@@ -220,8 +220,22 @@
 }
 
 - (void)reader:(nullable LogReader *)reader completedWithError:(nullable NSError *)error {
-    self.error = error;
-    self.reader = nil;
+ 
+    // completion handler can be called after processed last block
+    // but loader still is getting next block of data
+    if (self.loader != nil) {
+        return;
+    }
+
+    // state when loader finished downloading and released
+    // show error if log reader didn't find any result
+    if (self.models.count == 0) {
+        self.error = [NSError errorWithCode:AppErrorNoResults];
+        self.reader = nil;
+        return;
+    }
+
+    // update last parsed results
     [self updateLogView];
 }
 @end
