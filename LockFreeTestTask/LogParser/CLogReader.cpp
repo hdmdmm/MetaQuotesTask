@@ -143,6 +143,7 @@ namespace api {
     bool LaunchThread(BlockInfo *info) {
         pthread_t tid;
         pthread_attr_t  attr;
+        
         int error = pthread_attr_init(&attr);
         if (error != 0) {
             printf("\nThread can't be created : [%s]\n", strerror(error));
@@ -151,6 +152,14 @@ namespace api {
         
         error = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
         assert(!error);
+        
+//        sched_param param;
+//        error = pthread_attr_getschedparam(&attr, &param);
+//        assert(!error);
+
+//        param.sched_priority = sched_get_priority_min(SCHED_FIFO);
+//        error = pthread_attr_setschedparam(&attr, &param);
+//        assert(!error);
         
         info->thread_counter = ++vars::thread_counter;
         error = pthread_create(&tid, &attr, &FindMatchesInLines, info);

@@ -104,7 +104,6 @@
     [self.view endEditing:YES];
 
     [self.models removeAllObjects];
-    [self.tableView reloadData];
 
     [self startLoading];
 }
@@ -215,12 +214,14 @@
     [self.models addObject:line];
     [self saveToLogFile:line];
 
-    [self updateLogView];
+    if ([self.models count] % 20 == 0)
+        [self updateLogView];
 }
 
 - (void)reader:(nullable LogReader *)reader completedWithError:(nullable NSError *)error {
     self.error = error;
     self.reader = nil;
+    [self updateLogView];
 }
 @end
 
