@@ -49,6 +49,7 @@
 
 - (void)cancel {
     //manage by all created threads
+    self.delegate = nil;
 }
 
 - (BOOL)addToParse:(NSData * _Nullable)part {

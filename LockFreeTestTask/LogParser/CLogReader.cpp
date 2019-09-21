@@ -153,13 +153,13 @@ namespace api {
         error = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
         assert(!error);
         
-//        sched_param param;
-//        error = pthread_attr_getschedparam(&attr, &param);
-//        assert(!error);
+        sched_param param;
+        error = pthread_attr_getschedparam(&attr, &param);
+        assert(!error);
 
-//        param.sched_priority = sched_get_priority_min(SCHED_FIFO);
-//        error = pthread_attr_setschedparam(&attr, &param);
-//        assert(!error);
+        param.sched_priority = sched_get_priority_min(SCHED_FIFO);
+        error = pthread_attr_setschedparam(&attr, &param);
+        assert(!error);
         
         info->thread_counter = ++vars::thread_counter;
         error = pthread_create(&tid, &attr, &FindMatchesInLines, info);

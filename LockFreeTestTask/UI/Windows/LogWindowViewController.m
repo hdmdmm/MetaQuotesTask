@@ -120,6 +120,7 @@
     [self.reader cancel];
     self.reader = nil;
     [self.logView setHidden:YES];
+    self.isResultReady = NO;
 }
 
 - (void)setCloseButtonHidden:(BOOL)hidden {
