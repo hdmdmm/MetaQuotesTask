@@ -159,10 +159,13 @@ namespace api {
         error = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
         assert(!error);
         
+        error = pthread_attr_setschedpolicy(&attr, SCHED_FIFO);
+        assert(!error);
+
         sched_param param;
         error = pthread_attr_getschedparam(&attr, &param);
         assert(!error);
-
+    
         param.sched_priority = sched_get_priority_min(SCHED_FIFO);
         error = pthread_attr_setschedparam(&attr, &param);
         assert(!error);
