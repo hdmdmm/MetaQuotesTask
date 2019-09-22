@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9722A10E233743BE0088C628 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 9722A110233743BE0088C628 /* Localizable.strings */; };
 		973B9F0C230AC7A500EB114F /* ViewController+.m in Sources */ = {isa = PBXBuildFile; fileRef = 973B9F0B230AC7A500EB114F /* ViewController+.m */; };
 		973B9F0F230ACE6500EB114F /* Error+.m in Sources */ = {isa = PBXBuildFile; fileRef = 973B9F0E230ACE6500EB114F /* Error+.m */; };
 		9768C1022301BE74000C703A /* LogWindowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9768C1002301BE74000C703A /* LogWindowViewController.m */; };
 		9768C1082301C07A000C703A /* MainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9768C1072301C07A000C703A /* MainViewController.m */; };
-		979BD1D322FB3B7800582875 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 979BD1D222FB3B7800582875 /* Localizable.strings */; };
 		97ADDCE022E59B130052725B /* LogReader.mm in Sources */ = {isa = PBXBuildFile; fileRef = 97ADDCDF22E59B130052725B /* LogReader.mm */; };
 		97B9930B22DDE9B200C4E9E4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 97B9930A22DDE9B200C4E9E4 /* AppDelegate.m */; };
 		97B9931122DDE9B200C4E9E4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97B9930F22DDE9B200C4E9E4 /* Main.storyboard */; };
@@ -23,6 +23,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		9722A10F233743BE0088C628 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		973B9F0A230AC7A500EB114F /* ViewController+.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ViewController+.h"; sourceTree = "<group>"; };
 		973B9F0B230AC7A500EB114F /* ViewController+.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ViewController+.m"; sourceTree = "<group>"; };
 		973B9F0D230ACE6500EB114F /* Error+.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Error+.h"; sourceTree = "<group>"; };
@@ -31,7 +32,6 @@
 		9768C1002301BE74000C703A /* LogWindowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogWindowViewController.m; sourceTree = "<group>"; };
 		9768C1062301C07A000C703A /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
 		9768C1072301C07A000C703A /* MainViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainViewController.m; sourceTree = "<group>"; };
-		979BD1D222FB3B7800582875 /* Localizable.strings */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
 		979E5B6422EB363000CD3E84 /* LogReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LogReader.h; sourceTree = "<group>"; };
 		97ADDCDF22E59B130052725B /* LogReader.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = LogReader.mm; sourceTree = "<group>"; };
 		97B9930622DDE9B200C4E9E4 /* LockFreeTestTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LockFreeTestTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -126,7 +126,6 @@
 				97B9931722DDE9B300C4E9E4 /* Info.plist */,
 				97B9930922DDE9B200C4E9E4 /* AppDelegate.h */,
 				97B9930A22DDE9B200C4E9E4 /* AppDelegate.m */,
-				979BD1D222FB3B7800582875 /* Localizable.strings */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -146,6 +145,7 @@
 				97B9930F22DDE9B200C4E9E4 /* Main.storyboard */,
 				97B9931422DDE9B300C4E9E4 /* LaunchScreen.storyboard */,
 				97B9931222DDE9B300C4E9E4 /* Assets.xcassets */,
+				9722A110233743BE0088C628 /* Localizable.strings */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -228,7 +228,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				97B9931622DDE9B300C4E9E4 /* LaunchScreen.storyboard in Resources */,
-				979BD1D322FB3B7800582875 /* Localizable.strings in Resources */,
+				9722A10E233743BE0088C628 /* Localizable.strings in Resources */,
 				97B9931322DDE9B300C4E9E4 /* Assets.xcassets in Resources */,
 				97B9931122DDE9B200C4E9E4 /* Main.storyboard in Resources */,
 			);
@@ -256,6 +256,14 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXVariantGroup section */
+		9722A110233743BE0088C628 /* Localizable.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				9722A10F233743BE0088C628 /* en */,
+			);
+			name = Localizable.strings;
+			sourceTree = "<group>";
+		};
 		97B9930F22DDE9B200C4E9E4 /* Main.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (

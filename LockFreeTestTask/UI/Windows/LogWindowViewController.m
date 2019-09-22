@@ -150,13 +150,18 @@
 }
 
 - (void)showError:(NSError *)error {
-    if (error != nil) {
-        self.inProgress = NO;
-        UIAlertController *alert = [UIAlertController alertControllerWithTitle:@"Error!!!" message:self.error.localizedDescription preferredStyle: UIAlertControllerStyleAlert];
-        [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-        [self presentViewController: alert animated:YES completion:nil];
-        self.error = nil;
-    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        if (error != nil) {
+            self.inProgress = NO;
+            UIAlertController *alert
+            = [UIAlertController alertControllerWithTitle: @"Ups... :)"
+                                                  message: error.localizedDescription
+                                           preferredStyle: UIAlertControllerStyleAlert];
+            [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
+            [self presentViewController: alert animated:YES completion:nil];
+            self.error = nil;
+        }
+    });
 }
 
 - (void)updateLogView {
