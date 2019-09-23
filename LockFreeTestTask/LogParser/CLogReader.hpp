@@ -14,7 +14,7 @@
 
 using namespace std;
 
-class CLogReader {
+class CLogReader final {
 public:
     CLogReader( function<void(const char *)> call_back, function<void(void)> end_call_back );
     ~CLogReader();
