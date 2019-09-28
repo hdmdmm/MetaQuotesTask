@@ -30,9 +30,8 @@
 @property (weak, nonatomic) IBOutlet UILabel *progressLabel;
 
 //states
-@property (assign, nonatomic) BOOL inProgress;
-@property (assign, nonatomic) BOOL isResultReady;
-@property (strong, nonatomic) NSError *error;
+//@property (assign, nonatomic) BOOL inProgress;
+//@property (assign, nonatomic) BOOL isResultReady;
 
 //model
 @property (strong, nonatomic) NSString *logFileName;
@@ -43,7 +42,7 @@
 @implementation LogWindowViewController
 
 - (void)dealloc {
-    self.error = nil;
+//    self.error = nil;
     self.loader = nil;
     self.reader = nil;
     self.logFileName = nil;
@@ -150,16 +149,16 @@
 }
 
 - (void)showError:(NSError *)error {
+    __weak typeof (self) wself = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (error != nil) {
-            self.inProgress = NO;
+            wself.inProgress = NO;
             UIAlertController *alert
             = [UIAlertController alertControllerWithTitle: @"Ups... :)"
                                                   message: error.localizedDescription
                                            preferredStyle: UIAlertControllerStyleAlert];
             [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController: alert animated:YES completion:nil];
-            self.error = nil;
+            [wself presentViewController: alert animated:YES completion:nil];
         }
     });
 }
