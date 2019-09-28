@@ -28,6 +28,7 @@
 		973B9F0B230AC7A500EB114F /* ViewController+.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "ViewController+.m"; sourceTree = "<group>"; };
 		973B9F0D230ACE6500EB114F /* Error+.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Error+.h"; sourceTree = "<group>"; };
 		973B9F0E230ACE6500EB114F /* Error+.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "Error+.m"; sourceTree = "<group>"; };
+		975C4A20233F950F00FC9C14 /* BlockInfo.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = BlockInfo.hpp; sourceTree = "<group>"; };
 		9768C0FF2301BE74000C703A /* LogWindowViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LogWindowViewController.h; sourceTree = "<group>"; };
 		9768C1002301BE74000C703A /* LogWindowViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LogWindowViewController.m; sourceTree = "<group>"; };
 		9768C1062301C07A000C703A /* MainViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainViewController.h; sourceTree = "<group>"; };
@@ -114,6 +115,7 @@
 				97ADDCDF22E59B130052725B /* LogReader.mm */,
 				97B9932522DEF0F100C4E9E4 /* CLogReader.hpp */,
 				97B9932422DEF0F100C4E9E4 /* CLogReader.cpp */,
+				975C4A20233F950F00FC9C14 /* BlockInfo.hpp */,
 			);
 			path = LogParser;
 			sourceTree = "<group>";
