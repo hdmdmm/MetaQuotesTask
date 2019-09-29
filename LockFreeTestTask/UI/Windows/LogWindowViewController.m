@@ -29,11 +29,6 @@
 @property (weak, nonatomic) IBOutlet UIProgressView *progressView;
 @property (weak, nonatomic) IBOutlet UILabel *progressLabel;
 
-//states
-@property (assign, nonatomic) BOOL inProgress;
-@property (assign, nonatomic) BOOL isResultReady;
-@property (strong, nonatomic) NSError *error;
-
 //model
 @property (strong, nonatomic) NSString *logFileName;
 
@@ -43,7 +38,7 @@
 @implementation LogWindowViewController
 
 - (void)dealloc {
-    self.error = nil;
+//    self.error = nil;
     self.loader = nil;
     self.reader = nil;
     self.logFileName = nil;
@@ -95,7 +90,7 @@
 - (IBAction)activatedSearch:(UIButton *)sender {
     if ([self.urlEditor.text length] == 0
         || [self.filterEditor.text length] == 0){
-        self.error = [NSError errorWithCode:AppErrorInputFields];
+        [self setError:[NSError errorWithCode:AppErrorInputFields]];
         return;
     }
     if (_delegate) {
@@ -118,7 +113,7 @@
     [self.loader cancel];
     self.loader = nil;
     [self.reader cancel];
-    self.reader = nil;
+//    self.reader = nil;
     [self.logView setHidden:YES];
     self.isResultReady = NO;
 }
@@ -150,16 +145,16 @@
 }
 
 - (void)showError:(NSError *)error {
+    __weak typeof (self) wself = self;
     dispatch_async(dispatch_get_main_queue(), ^{
         if (error != nil) {
-            self.inProgress = NO;
+            wself.inProgress = NO;
             UIAlertController *alert
             = [UIAlertController alertControllerWithTitle: @"Ups... :)"
                                                   message: error.localizedDescription
                                            preferredStyle: UIAlertControllerStyleAlert];
             [alert addAction: [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:nil]];
-            [self presentViewController: alert animated:YES completion:nil];
-            self.error = nil;
+            [wself presentViewController: alert animated:YES completion:nil];
         }
     });
 }
@@ -204,7 +199,7 @@
 }
 
 - (void)loader:(LogDownloader * _Nonnull)loader completedWith:(NSError * _Nullable)error {
-    self.error = error;
+    [self setError:error];
     self.loader = nil;
 }
 
@@ -235,7 +230,7 @@
     // state when loader finished downloading and released
     // show error if log reader didn't find any result
     if (self.models.count == 0) {
-        self.error = [NSError errorWithCode:AppErrorNoResults];
+        [self setError:[NSError errorWithCode:AppErrorNoResults]];
         self.reader = nil;
         return;
     }

@@ -57,7 +57,7 @@ namespace api {
         BlockInfo * info = (BlockInfo *)arg;
 
         const CLogReader *reader = info->reader;
-        if (!reader) { return NULL; } // it doesn't make sence continue here
+        if (!reader) return NULL; // it doesn't make sence continue here
 
         
         reader->LockThreads();
@@ -87,16 +87,20 @@ namespace api {
         char *block = buffer == NULL ? (char *)info->data : buffer;
         while (*block=='\n') block++;
         char *line_ptr = block;
-        while (*block++) {
-            if (*block == '\n') {
+        while (*block++)
+        {
+            if (*block == '\n')
+            {
                 block++;
-                if (*block == '\0') {
+                if (*block == '\0')
+                {
                     line_ptr = NULL;
                     break;
                 }
                 size_t line_size = block-line_ptr;
                 char *copied_line = strndup(line_ptr, line_size-1);
-                if (IsLineMatchToKey(copied_line, reader->GetFilter())) {
+                if (IsLineMatchToKey(copied_line, reader->GetFilter()))
+                {
                     reader->FoundResult(copied_line);
                 }
                 //
@@ -109,8 +113,7 @@ namespace api {
         reader->SetAppendix(line_ptr);
 //        SaveAppendix(line_ptr);
         
-        if (buffer != NULL)
-            free(buffer);
+        if (buffer != NULL) free(buffer);
 
         //free memory
         int thread_number = info->thread_counter;
@@ -120,7 +123,8 @@ namespace api {
         printf("Finished thread number %d\n", thread_number);
         
         //marker of last created thread
-        if (thread_number == reader->NumberOfThreads()) {
+        if (thread_number == reader->NumberOfThreads())
+        {
             reader->EndReading();
         }
         return NULL;
@@ -138,13 +142,14 @@ CLogReader::CLogReader(function<void(const char *)> call_back, function<void(voi
 
 CLogReader::~CLogReader()
 {
+    //kill all created threads
     pthread_mutex_destroy(&_mutex);
     Cleanup();
 }
 
 bool CLogReader::SetFilter(const char *filter)
 {
-    if (filter == NULL) { return false; }
+    if (filter == NULL) return false;
     Cleanup();
     _search_key = strdup(filter);
     return _search_key != NULL;
@@ -164,7 +169,7 @@ bool CLogReader::AddSourceBlock(const char *block, const size_t block_size) {
 
     // making copy of block into BlockInfo
     char *mem = strdup(block);
-    if (mem == NULL) { return false; }
+    if (mem == NULL) return false;
     
     BlockInfo *info = (BlockInfo *)malloc(sizeof(BlockInfo));
     info->data = mem;
@@ -173,34 +178,38 @@ bool CLogReader::AddSourceBlock(const char *block, const size_t block_size) {
 
     // prepare ThreadInfo structure
     bool result = LaunchThread(info);
-    if (!result) {
-        info->free();
-    }
+    if (!result) info->free();
+
     return result;
 }
 
-void CLogReader::Cleanup() {
+void CLogReader::Cleanup()
+{
     if (_search_key)
     {
         free(_search_key);
         _search_key = NULL;
     }
 
-    if (_appendix) {
+    if (_appendix)
+    {
         free(_appendix);
         _appendix = NULL;
     }
 }
 
-const char * CLogReader::GetFilter() const {
+const char * CLogReader::GetFilter() const
+{
     return _search_key;
 }
 
-const char * CLogReader::GetAppendix() const {
+const char * CLogReader::GetAppendix() const
+{
     return _appendix;
 }
 
-bool CLogReader::SetAppendix(const char *end_line) const {
+bool CLogReader::SetAppendix(const char *end_line) const
+{
     if (end_line == NULL)
         return false;
 
@@ -208,14 +217,17 @@ bool CLogReader::SetAppendix(const char *end_line) const {
     return _appendix != NULL;
 }
 
-void CLogReader::CleanupAppendix() const {
-    if (_appendix) {
+void CLogReader::CleanupAppendix() const
+{
+    if (_appendix)
+    {
         free(_appendix);
         _appendix = NULL;
     }
 }
 
-bool CLogReader::LaunchThread(BlockInfo *info) {
+bool CLogReader::LaunchThread(BlockInfo *info)
+{
     pthread_t tid;
     pthread_attr_t  attr;
     
@@ -253,21 +265,26 @@ bool CLogReader::LaunchThread(BlockInfo *info) {
     return true;
 }
 
-void CLogReader::LockThreads() const {
+void CLogReader::LockThreads() const
+{
     pthread_mutex_lock(&_mutex);
 }
 
-void CLogReader::UnlockThreads() const {
+void CLogReader::UnlockThreads() const
+{
     pthread_mutex_unlock(&_mutex);
 }
 
-int CLogReader::NumberOfThreads() const {
+int CLogReader::NumberOfThreads() const
+{
     return _thread_counter;
 }
 
-void CLogReader::FoundResult(const char *line) const {
+void CLogReader::FoundResult(const char *line) const
+{
     call_back(line);
 }
-void CLogReader::EndReading() const {
+void CLogReader::EndReading() const
+{
     end_call_back();
 }

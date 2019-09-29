@@ -24,11 +24,11 @@
         __weak typeof(self) _wself = self;
         auto callBack = [=](const char *linePtr) {
             NSString *string = [NSString stringWithCString:linePtr encoding:NSUTF8StringEncoding];
-            [self.delegate reader:_wself foundLine:string];
+            [_wself.delegate reader:_wself foundLine:string];
             return true;
         };
         auto endCallBack = [=](void) {
-            [self.delegate reader:_wself completedWithError:nil];
+            [_wself.delegate reader:_wself completedWithError:nil];
         };
         
         _reader = new CLogReader( callBack, endCallBack );
@@ -46,7 +46,6 @@
         delete _reader;
         _reader = NULL;
     }
-    self.key = nil;
     [super dealloc];
 }
 
