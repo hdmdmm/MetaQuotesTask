@@ -18,9 +18,9 @@
 
 @interface LogReader: NSObject
 
-@property (copy, nonatomic) NSString * _Nullable key;
 @property (assign, nonatomic) id<LogReaderDelegate> _Nullable delegate;
 
+- (void)setKey:(NSString * _Nonnull)key;
 - (BOOL)addToParse:(nullable NSData *)part;
 - (void)cancel;
 
